@@ -1,0 +1,14 @@
+# 大数据目录
+直肠癌数据/
+直肠癌数据_small/
+实验成果/
+
+# 模型权重文件
+*.pth
+
+# node_modules
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
