@@ -1,0 +1,9 @@
+# CTAI 直肠肿瘤分割数据集 (YOLO11-seg 格式)
+path: C:\Users\da983\CAT_2Ck\CTAI-master\CTAI_model\datasets\rectal_tumor_seg
+train: images/train
+val: images/val
+
+names:
+  0: tumor
+
+nc: 1

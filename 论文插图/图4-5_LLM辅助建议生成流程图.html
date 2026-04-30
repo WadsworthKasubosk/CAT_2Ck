@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>图4-5 LLM辅助建议生成流程图</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; font-family: "SimSun", "SimHei", serif; }
+</style>
+</head>
+<body>
+<svg width="880" height="400" viewBox="0 0 880 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5 Z" fill="#555"/></marker>
+  </defs>
+
+  <text x="440" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" font-family="SimSun, SimHei">图4-5 LLM辅助建议生成流程图</text>
+
+  <!-- ===== Step 1: Trigger ===== -->
+  <rect x="30" y="70" width="110" height="60" rx="30" fill="#34495E"/>
+  <text x="85" y="96" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">用户点击</text>
+  <text x="85" y="112" text-anchor="middle" font-size="10" fill="#ccc">"生成建议"</text>
+
+  <line x1="140" y1="100" x2="165" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 2: Query DB ===== -->
+  <rect x="170" y="60" width="130" height="80" rx="6" fill="#4A90D9"/>
+  <text x="235" y="85" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">查询数据库</text>
+  <text x="235" y="105" text-anchor="middle" font-size="9" fill="#ddd">当次诊断 24项特征</text>
+  <text x="235" y="120" text-anchor="middle" font-size="9" fill="#ddd">该患者历史趋势</text>
+  <text x="235" y="135" text-anchor="middle" font-size="9" fill="#ddd">诊断记录数</text>
+
+  <line x1="300" y1="100" x2="325" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 3: Build Prompt ===== -->
+  <rect x="330" y="55" width="150" height="90" rx="6" fill="#E67E22"/>
+  <text x="405" y="80" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">构建 Prompt</text>
+  <line x1="340" y1="90" x2="470" y2="90" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <text x="405" y="108" text-anchor="middle" font-size="9" fill="#fde">系统角色: 资深影像科医生</text>
+  <text x="405" y="122" text-anchor="middle" font-size="9" fill="#fde">特征值明细表</text>
+  <text x="405" y="136" text-anchor="middle" font-size="9" fill="#fde">趋势变化数据 (如有)</text>
+
+  <!-- Prompt content detail -->
+  <rect x="330" y="155" width="150" height="80" rx="4" fill="#FDF2E9" stroke="#F5CBA7" stroke-width="1"/>
+  <text x="405" y="172" text-anchor="middle" font-size="9" fill="#E67E22" font-weight="bold">Prompt 结构:</text>
+  <text x="405" y="188" text-anchor="middle" font-size="8" fill="#666">1. 角色设定</text>
+  <text x="405" y="200" text-anchor="middle" font-size="8" fill="#666">2. 特征数据 (JSON)</text>
+  <text x="405" y="212" text-anchor="middle" font-size="8" fill="#666">3. 历史趋势摘要</text>
+  <text x="405" y="224" text-anchor="middle" font-size="8" fill="#666">4. 输出格式要求</text>
+
+  <line x1="480" y1="100" x2="505" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 4: Call LLM API ===== -->
+  <rect x="510" y="55" width="140" height="90" rx="6" fill="#8E44AD"/>
+  <text x="580" y="80" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">调用 LLM API</text>
+  <line x1="520" y1="90" x2="640" y2="90" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <text x="580" y="108" text-anchor="middle" font-size="10" fill="#e8d5f5">通义千问 qwen-plus</text>
+  <text x="580" y="124" text-anchor="middle" font-size="9" fill="#d5b8e8">或 DeepSeek / OpenAI</text>
+  <text x="580" y="138" text-anchor="middle" font-size="9" fill="#d5b8e8">可运行时切换</text>
+
+  <!-- API detail -->
+  <rect x="510" y="155" width="140" height="55" rx="4" fill="#F5EEF8" stroke="#D7BDE2" stroke-width="1"/>
+  <text x="580" y="172" text-anchor="middle" font-size="9" fill="#8E44AD" font-weight="bold">llm_service.py</text>
+  <text x="580" y="188" text-anchor="middle" font-size="8" fill="#666">OpenAI 兼容接口</text>
+  <text x="580" y="200" text-anchor="middle" font-size="8" fill="#666">支持多 Provider 切换</text>
+
+  <line x1="650" y1="100" x2="675" y2="100" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 5: Save & Return ===== -->
+  <rect x="680" y="60" width="120" height="80" rx="6" fill="#27AE60"/>
+  <text x="740" y="85" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">保存报告</text>
+  <line x1="690" y1="95" x2="790" y2="95" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <text x="740" y="112" text-anchor="middle" font-size="9" fill="#d5f5e3">写入 llm_reports 表</text>
+  <text x="740" y="128" text-anchor="middle" font-size="9" fill="#d5f5e3">返回建议文本</text>
+
+  <line x1="740" y1="140" x2="740" y2="165" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 6: Display ===== -->
+  <rect x="680" y="170" width="120" height="60" rx="6" fill="#2C3E50"/>
+  <text x="740" y="195" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">前端展示</text>
+  <text x="740" y="215" text-anchor="middle" font-size="9" fill="#ccc">建议文本 + 免责声明</text>
+
+  <!-- ===== Bottom: Output example ===== -->
+  <rect x="80" y="270" width="720" height="110" rx="6" fill="#F8F9FA" stroke="#DEE2E6" stroke-width="1"/>
+  <text x="440" y="292" text-anchor="middle" font-size="12" fill="#333" font-weight="bold" font-family="SimHei">LLM 输出内容示例</text>
+  <line x1="90" y1="300" x2="790" y2="300" stroke="#eee" stroke-width="1"/>
+  <text x="100" y="318" font-size="10" fill="#555">1. 当前特征分析: 肿瘤面积 1086 px, 周长 142.3 px, 似圆度 0.67, 灰度均值 128.5...</text>
+  <text x="100" y="336" font-size="10" fill="#555">2. 趋势对比: 与上次诊断相比，面积减小 12.3%，提示治疗可能有效...</text>
+  <text x="100" y="354" font-size="10" fill="#555">3. 建议关注: GLGCM纹理特征异质性增加，建议结合增强MRI进一步评估...</text>
+  <text x="100" y="372" font-size="10" fill="#E74C3C" font-style="italic">* 免责声明: 以上内容由AI生成，仅供辅助参考，不能替代专业医生的诊断和治疗方案。</text>
+</svg>
+</body>
+</html>

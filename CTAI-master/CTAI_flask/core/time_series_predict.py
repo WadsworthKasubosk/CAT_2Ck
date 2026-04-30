@@ -342,6 +342,15 @@ def lstm_predict(area_values, perimeter_values, mean_values,
     """
     global _lstm_model, _lstm_device, _normalizer
 
+    # 在某些 Windows + Python 3.12 + torch CPU 环境下，LSTM forward 会触发段错误。
+    # 设置环境变量 CTAI_DISABLE_LSTM=1 可禁用 LSTM 通路，仅走线性回归。
+    if os.environ.get('CTAI_DISABLE_LSTM', '0') == '1':
+        return {
+            'success': False,
+            'msg': 'LSTM 通路已禁用（CTAI_DISABLE_LSTM=1），仅使用线性回归预测',
+            'predictions': {}
+        }
+
     # 构建特征矩阵
     feature_matrix = _build_feature_matrix(
         area_values, perimeter_values, mean_values, std_values, ellipse_values

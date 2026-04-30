@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>图2-3 YOLO11-seg分割机制示意图</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; font-family: "SimSun", "SimHei", serif; }
+</style>
+</head>
+<body>
+<svg width="900" height="480" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#555"/></marker>
+    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#8E44AD"/></marker>
+  </defs>
+
+  <text x="450" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" font-family="SimSun, SimHei">图2-3 YOLO11-seg 分割机制示意图</text>
+
+  <!-- ===== Shared Backbone + Neck ===== -->
+  <rect x="30" y="120" width="130" height="200" rx="6" fill="#4A90D9" opacity="0.9"/>
+  <text x="95" y="165" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" font-family="SimHei">共享特征</text>
+  <text x="95" y="185" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" font-family="SimHei">提取网络</text>
+  <text x="95" y="210" text-anchor="middle" font-size="10" fill="#ddd">Backbone</text>
+  <text x="95" y="225" text-anchor="middle" font-size="10" fill="#ddd">+</text>
+  <text x="95" y="240" text-anchor="middle" font-size="10" fill="#ddd">Neck</text>
+  <text x="95" y="265" text-anchor="middle" font-size="9" fill="#bbb">多尺度特征图</text>
+  <text x="95" y="280" text-anchor="middle" font-size="9" fill="#bbb">P3 / P4 / P5</text>
+
+  <!-- Input -->
+  <rect x="30" y="55" width="130" height="40" rx="4" fill="#2C3E50"/>
+  <text x="95" y="72" text-anchor="middle" font-size="11" fill="#fff">输入图像 512x512x3</text>
+  <text x="95" y="87" text-anchor="middle" font-size="9" fill="#ccc">CT切片 (BGR 3通道)</text>
+  <line x1="95" y1="95" x2="95" y2="120" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Detection Head ===== -->
+  <rect x="210" y="60" width="180" height="130" rx="6" fill="#E74C3C" opacity="0.85"/>
+  <text x="300" y="85" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" font-family="SimHei">检测头 (Detect Head)</text>
+  <line x1="220" y1="95" x2="380" y2="95" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+  <text x="300" y="115" text-anchor="middle" font-size="10" fill="#ffe0e0">边界框坐标 (x, y, w, h)</text>
+  <text x="300" y="132" text-anchor="middle" font-size="10" fill="#ffe0e0">类别概率 (tumor: 0.92)</text>
+  <text x="300" y="149" text-anchor="middle" font-size="10" fill="#ffe0e0">置信度分数</text>
+  <text x="300" y="175" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">+ 掩膜系数向量</text>
+  <text x="300" y="188" text-anchor="middle" font-size="9" fill="#ffcccc">(Mask Coefficients, 32维)</text>
+
+  <line x1="160" y1="180" x2="210" y2="130" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Proto Head ===== -->
+  <rect x="210" y="260" width="180" height="120" rx="6" fill="#8E44AD" opacity="0.85"/>
+  <text x="300" y="285" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" font-family="SimHei">原型头 (Proto Head)</text>
+  <line x1="220" y1="295" x2="380" y2="295" stroke="#fff" stroke-width="0.5" opacity="0.5"/>
+  <text x="300" y="315" text-anchor="middle" font-size="10" fill="#e8d5f5">从 P3 高分辨率特征图生成</text>
+  <text x="300" y="335" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">32 个原型掩膜</text>
+  <text x="300" y="355" text-anchor="middle" font-size="10" fill="#e8d5f5">(Prototype Masks)</text>
+  <text x="300" y="372" text-anchor="middle" font-size="9" fill="#d5b8e8">尺寸: 32 x 128 x 128</text>
+
+  <line x1="160" y1="270" x2="210" y2="310" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Matrix Multiplication ===== -->
+  <rect x="450" y="170" width="130" height="100" rx="50" fill="#F39C12" opacity="0.9"/>
+  <text x="515" y="205" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold" font-family="SimHei">线性组合</text>
+  <text x="515" y="225" text-anchor="middle" font-size="20" fill="#fff">C x P</text>
+  <text x="515" y="250" text-anchor="middle" font-size="9" fill="#fff">系数 x 原型 = 实例掩膜</text>
+
+  <!-- Arrows to multiplication -->
+  <line x1="390" y1="155" x2="450" y2="200" stroke="#E74C3C" stroke-width="2" marker-end="url(#a)"/>
+  <text x="412" y="162" font-size="9" fill="#E74C3C" font-weight="bold">系数 C</text>
+  <text x="408" y="174" font-size="8" fill="#999">(1x32)</text>
+
+  <line x1="390" y1="320" x2="450" y2="250" stroke="#8E44AD" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="405" y="296" font-size="9" fill="#8E44AD" font-weight="bold">原型 P</text>
+  <text x="403" y="308" font-size="8" fill="#999">(32x128x128)</text>
+
+  <!-- ===== Sigmoid + Crop ===== -->
+  <rect x="630" y="180" width="100" height="80" rx="5" fill="#27AE60" opacity="0.9"/>
+  <text x="680" y="208" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">Sigmoid</text>
+  <text x="680" y="225" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">+</text>
+  <text x="680" y="245" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">BBox裁剪</text>
+
+  <line x1="580" y1="220" x2="630" y2="220" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- ===== Output Mask ===== -->
+  <rect x="775" y="165" width="105" height="110" rx="6" fill="#2C3E50"/>
+  <text x="828" y="190" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">实例分割</text>
+  <text x="828" y="207" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">掩膜</text>
+  <text x="828" y="230" text-anchor="middle" font-size="10" fill="#ccc">512 x 512</text>
+  <text x="828" y="248" text-anchor="middle" font-size="10" fill="#ccc">像素级分割</text>
+  <text x="828" y="266" text-anchor="middle" font-size="9" fill="#aaa">每个实例独立</text>
+
+  <line x1="730" y1="220" x2="775" y2="220" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- ===== Bottom: process flow summary ===== -->
+  <rect x="80" y="420" width="740" height="45" rx="6" fill="#F8F9FA" stroke="#DEE2E6" stroke-width="1"/>
+  <text x="450" y="440" text-anchor="middle" font-size="11" fill="#555" font-family="SimHei">
+    核心思想：所有实例共享同一组原型掩膜，每个实例仅需学习一组低维系数向量（32维），
+  </text>
+  <text x="450" y="456" text-anchor="middle" font-size="11" fill="#555" font-family="SimHei">
+    通过线性组合即可高效生成专属的像素级分割掩膜，计算开销极小
+  </text>
+
+  <!-- ===== Annotation arrows with formulas ===== -->
+  <text x="515" y="155" text-anchor="middle" font-size="10" fill="#888">Mask = Sigmoid(C * P)</text>
+</svg>
+</body>
+</html>

@@ -3,7 +3,6 @@ import os
 import SimpleITK as sitk
 import cv2
 import numpy as np
-import torch
 
 
 def data_in_one(inputdata):
@@ -14,25 +13,31 @@ def data_in_one(inputdata):
 
 
 def pre_process(data_path):
-    """读取 DICOM，返回全图 tensor + 文件名"""
+    """
+    读取 DICOM，保存为 PNG 供 YOLO 推理
+    返回: (image_png_path, file_name)
+    """
     image = sitk.ReadImage(data_path)
-    image_array = sitk.GetArrayFromImage(image)  # [1, H, W]
+    image_array = sitk.GetArrayFromImage(image)  # [1, H, W] or [H, W]
+    if image_array.ndim == 3:
+        image_array = image_array[0]
 
-    # 归一化
-    image_norm = data_in_one(image_array)
-
-    # 转为模型输入 tensor: [1, 1, H, W]
-    image_tensor = torch.from_numpy(image_norm).float().unsqueeze(0)
+    # 归一化为 uint8
+    vis_array = data_in_one(image_array) * 255
+    vis_array = vis_array.astype(np.uint8)
 
     file_name = os.path.split(data_path)[1].replace('.dcm', '')
 
-    # 保存原图用于前端显示
-    vis_array = image_array[0].astype(np.float32)
-    vis_array = data_in_one(vis_array) * 255
-    vis_array = vis_array.astype(np.uint8)
-    cv2.imwrite(f'./tmp/image/{file_name}.png', vis_array, (cv2.IMWRITE_PNG_COMPRESSION, 0))
+    # 保存原图 PNG（灰度，供前端显示）
+    image_png_path = f'./tmp/image/{file_name}.png'
+    cv2.imwrite(image_png_path, vis_array, (cv2.IMWRITE_PNG_COMPRESSION, 0))
 
-    return [image_tensor], file_name
+    # 同时保存一份 3 通道版本供 YOLO 推理
+    img_3ch = cv2.cvtColor(vis_array, cv2.COLOR_GRAY2BGR)
+    yolo_input_path = f'./tmp/image/{file_name}_3ch.png'
+    cv2.imwrite(yolo_input_path, img_3ch)
+
+    return yolo_input_path, file_name
 
 
 def last_process(file_name):

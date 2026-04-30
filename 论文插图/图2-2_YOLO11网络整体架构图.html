@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>图2-2 YOLO11网络整体架构图</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; font-family: "SimSun", "SimHei", serif; }
+</style>
+</head>
+<body>
+<svg width="960" height="580" viewBox="0 0 960 580" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#555"/></marker>
+    <marker id="arr-w" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#fff"/></marker>
+  </defs>
+
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" font-family="SimSun, SimHei, serif">图2-2 YOLO11网络整体架构图</text>
+
+  <!-- ===== INPUT ===== -->
+  <rect x="15" y="210" width="70" height="100" rx="5" fill="#34495E"/>
+  <text x="50" y="250" text-anchor="middle" font-size="11" fill="#fff" font-family="SimHei">输入</text>
+  <text x="50" y="268" text-anchor="middle" font-size="10" fill="#ccc">512x512</text>
+  <text x="50" y="282" text-anchor="middle" font-size="10" fill="#ccc">x 3ch</text>
+
+  <!-- Arrow input -> backbone -->
+  <line x1="85" y1="260" x2="108" y2="260" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ============ BACKBONE ============ -->
+  <rect x="110" y="50" width="280" height="430" rx="8" fill="#EBF5FB" stroke="#4A90D9" stroke-width="2"/>
+  <text x="250" y="76" text-anchor="middle" font-size="14" font-weight="bold" fill="#2471A3" font-family="SimHei">Backbone (骨干网络)</text>
+
+  <!-- Conv stem -->
+  <rect x="130" y="90" width="100" height="36" rx="4" fill="#4A90D9"/>
+  <text x="180" y="108" text-anchor="middle" font-size="10" fill="#fff">Conv 3x3, s=2</text>
+  <text x="180" y="120" text-anchor="middle" font-size="9" fill="#ddd">256x256x32</text>
+
+  <line x1="180" y1="126" x2="180" y2="138" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- C3k2 block 1 -->
+  <rect x="130" y="140" width="100" height="36" rx="4" fill="#2E86C1"/>
+  <text x="180" y="156" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">C3k2</text>
+  <text x="180" y="170" text-anchor="middle" font-size="9" fill="#ddd">128x128x64</text>
+
+  <line x1="180" y1="176" x2="180" y2="188" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- C3k2 block 2 -->
+  <rect x="130" y="190" width="100" height="36" rx="4" fill="#2E86C1"/>
+  <text x="180" y="206" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">C3k2</text>
+  <text x="180" y="220" text-anchor="middle" font-size="9" fill="#ddd">64x64x128</text>
+
+  <!-- P3 label -->
+  <rect x="248" y="196" width="28" height="18" rx="3" fill="#F39C12"/>
+  <text x="262" y="209" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">P3</text>
+  <line x1="230" y1="208" x2="248" y2="207" stroke="#F39C12" stroke-width="1.2"/>
+
+  <line x1="180" y1="226" x2="180" y2="238" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- C3k2 block 3 -->
+  <rect x="130" y="240" width="100" height="36" rx="4" fill="#2E86C1"/>
+  <text x="180" y="256" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">C3k2</text>
+  <text x="180" y="270" text-anchor="middle" font-size="9" fill="#ddd">32x32x256</text>
+
+  <!-- P4 label -->
+  <rect x="248" y="246" width="28" height="18" rx="3" fill="#F39C12"/>
+  <text x="262" y="259" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">P4</text>
+  <line x1="230" y1="258" x2="248" y2="257" stroke="#F39C12" stroke-width="1.2"/>
+
+  <line x1="180" y1="276" x2="180" y2="288" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- C3k2 block 4 -->
+  <rect x="130" y="290" width="100" height="36" rx="4" fill="#2E86C1"/>
+  <text x="180" y="306" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">C3k2</text>
+  <text x="180" y="320" text-anchor="middle" font-size="9" fill="#ddd">16x16x512</text>
+
+  <line x1="180" y1="326" x2="180" y2="338" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- SPPF -->
+  <rect x="130" y="340" width="100" height="42" rx="4" fill="#1A5276"/>
+  <text x="180" y="358" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">SPPF</text>
+  <text x="180" y="374" text-anchor="middle" font-size="9" fill="#ddd">16x16x512</text>
+
+  <!-- P5 label -->
+  <rect x="248" y="350" width="28" height="18" rx="3" fill="#F39C12"/>
+  <text x="262" y="363" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">P5</text>
+  <line x1="230" y1="361" x2="248" y2="361" stroke="#F39C12" stroke-width="1.2"/>
+
+  <!-- C3k2 description -->
+  <rect x="130" y="400" width="240" height="60" rx="4" fill="#D6EAF8" stroke="#85C1E9" stroke-width="1"/>
+  <text x="250" y="417" font-size="10" fill="#2471A3" font-family="SimHei">C3k2: Cross Stage Partial + 2 Kernels</text>
+  <text x="250" y="432" font-size="9" fill="#555">- 双尺寸卷积核并行特征提取</text>
+  <text x="250" y="446" font-size="9" fill="#555">- 跨阶段部分连接，降低计算量</text>
+
+  <!-- ============ NECK ============ -->
+  <rect x="400" y="50" width="230" height="430" rx="8" fill="#FEF9E7" stroke="#F1C40F" stroke-width="2"/>
+  <text x="515" y="76" text-anchor="middle" font-size="14" font-weight="bold" fill="#B7950B" font-family="SimHei">Neck (颈部网络)</text>
+
+  <!-- FPN top-down -->
+  <text x="515" y="100" text-anchor="middle" font-size="11" fill="#B7950B" font-family="SimHei">FPN 自顶向下路径</text>
+
+  <rect x="420" y="112" width="90" height="32" rx="4" fill="#F4D03F"/>
+  <text x="465" y="131" text-anchor="middle" font-size="10" fill="#333">Upsample</text>
+  <line x1="465" y1="144" x2="465" y2="156" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <rect x="420" y="158" width="90" height="32" rx="4" fill="#D4AC0D"/>
+  <text x="465" y="176" text-anchor="middle" font-size="10" fill="#fff">C3k2 + Concat</text>
+  <line x1="465" y1="190" x2="465" y2="202" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <rect x="420" y="204" width="90" height="32" rx="4" fill="#F4D03F"/>
+  <text x="465" y="223" text-anchor="middle" font-size="10" fill="#333">Upsample</text>
+  <line x1="465" y1="236" x2="465" y2="248" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <rect x="420" y="250" width="90" height="32" rx="4" fill="#D4AC0D"/>
+  <text x="465" y="268" text-anchor="middle" font-size="10" fill="#fff">C3k2 + Concat</text>
+
+  <!-- PAN bottom-up -->
+  <text x="515" y="310" text-anchor="middle" font-size="11" fill="#B7950B" font-family="SimHei">PAN 自底向上路径</text>
+
+  <rect x="530" y="160" width="80" height="28" rx="4" fill="#E67E22"/>
+  <text x="570" y="178" text-anchor="middle" font-size="10" fill="#fff">Conv s=2</text>
+
+  <rect x="530" y="200" width="80" height="32" rx="4" fill="#CA6F1E"/>
+  <text x="570" y="219" text-anchor="middle" font-size="10" fill="#fff">C3k2 + Concat</text>
+
+  <rect x="530" y="250" width="80" height="28" rx="4" fill="#E67E22"/>
+  <text x="570" y="268" text-anchor="middle" font-size="10" fill="#fff">Conv s=2</text>
+
+  <rect x="530" y="290" width="80" height="32" rx="4" fill="#CA6F1E"/>
+  <text x="570" y="309" text-anchor="middle" font-size="10" fill="#fff">C3k2 + Concat</text>
+
+  <!-- Arrows between FPN and PAN -->
+  <line x1="510" y1="174" x2="530" y2="174" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="510" y1="266" x2="530" y2="264" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Multi-scale output labels -->
+  <text x="465" y="296" text-anchor="middle" font-size="9" fill="#888">64x64</text>
+  <text x="570" y="244" text-anchor="middle" font-size="9" fill="#888">32x32</text>
+  <text x="570" y="332" text-anchor="middle" font-size="9" fill="#888">16x16</text>
+
+  <!-- Neck description -->
+  <rect x="415" y="360" width="200" height="100" rx="4" fill="#FDF2E9" stroke="#F0B27A" stroke-width="1"/>
+  <text x="515" y="380" text-anchor="middle" font-size="10" fill="#B7950B" font-family="SimHei">PAN-FPN 多尺度特征融合</text>
+  <text x="515" y="397" font-size="9" fill="#555" text-anchor="middle">- FPN: 深层语义信息向浅层传递</text>
+  <text x="515" y="412" font-size="9" fill="#555" text-anchor="middle">- PAN: 浅层位置信息向深层传递</text>
+  <text x="515" y="427" font-size="9" fill="#555" text-anchor="middle">- 双向融合，平衡语义与定位</text>
+  <text x="515" y="442" font-size="9" fill="#555" text-anchor="middle">- 输出 P3/P4/P5 三级特征图</text>
+
+  <!-- ===== Backbone -> Neck arrows ===== -->
+  <line x1="276" y1="208" x2="420" y2="174" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr)"/>
+  <line x1="276" y1="258" x2="420" y2="222" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr)"/>
+  <line x1="276" y1="361" x2="420" y2="125" stroke="#4A90D9" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arr)"/>
+
+  <!-- ============ HEAD ============ -->
+  <rect x="650" y="50" width="290" height="430" rx="8" fill="#F5EEF8" stroke="#8E44AD" stroke-width="2"/>
+  <text x="795" y="76" text-anchor="middle" font-size="14" font-weight="bold" fill="#7D3C98" font-family="SimHei">Head (检测头)</text>
+
+  <!-- Detect head -->
+  <text x="795" y="100" text-anchor="middle" font-size="11" fill="#7D3C98" font-family="SimHei">解耦检测头 (Decoupled Head)</text>
+
+  <!-- Scale 1 -->
+  <rect x="670" y="115" width="120" height="55" rx="4" fill="#AF7AC5"/>
+  <text x="730" y="133" text-anchor="middle" font-size="10" fill="#fff">分类分支 (Cls)</text>
+  <line x1="730" y1="140" x2="730" y2="148" stroke="#eee" stroke-width="0.5"/>
+  <text x="730" y="160" text-anchor="middle" font-size="10" fill="#fff">回归分支 (Reg)</text>
+
+  <!-- Scale 2 -->
+  <rect x="670" y="180" width="120" height="55" rx="4" fill="#AF7AC5"/>
+  <text x="730" y="198" text-anchor="middle" font-size="10" fill="#fff">分类分支 (Cls)</text>
+  <text x="730" y="225" text-anchor="middle" font-size="10" fill="#fff">回归分支 (Reg)</text>
+
+  <!-- Scale 3 -->
+  <rect x="670" y="245" width="120" height="55" rx="4" fill="#AF7AC5"/>
+  <text x="730" y="263" text-anchor="middle" font-size="10" fill="#fff">分类分支 (Cls)</text>
+  <text x="730" y="290" text-anchor="middle" font-size="10" fill="#fff">回归分支 (Reg)</text>
+
+  <!-- Scale labels -->
+  <text x="800" y="145" font-size="9" fill="#7D3C98">P3 (大目标)</text>
+  <text x="800" y="210" font-size="9" fill="#7D3C98">P4 (中目标)</text>
+  <text x="800" y="275" font-size="9" fill="#7D3C98">P5 (小目标)</text>
+
+  <!-- Seg head (YOLO11-seg) -->
+  <rect x="670" y="320" width="250" height="65" rx="5" fill="#7D3C98"/>
+  <text x="795" y="342" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">Proto Head (分割分支)</text>
+  <text x="795" y="360" text-anchor="middle" font-size="10" fill="#ddd">原型掩膜生成 + 掩膜系数</text>
+  <text x="795" y="375" text-anchor="middle" font-size="9" fill="#ccc">仅 YOLO11-seg 模式启用</text>
+
+  <!-- Output boxes -->
+  <rect x="670" y="405" width="110" height="32" rx="4" fill="#2C3E50"/>
+  <text x="725" y="425" text-anchor="middle" font-size="10" fill="#fff">BBox + Class</text>
+
+  <rect x="800" y="405" width="120" height="32" rx="4" fill="#2C3E50"/>
+  <text x="860" y="425" text-anchor="middle" font-size="10" fill="#fff">Instance Masks</text>
+
+  <line x1="730" y1="300" x2="725" y2="405" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="795" y1="385" x2="860" y2="405" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="795" y1="385" x2="725" y2="405" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- Arrows Neck -> Head -->
+  <line x1="465" y1="282" x2="465" y2="295" stroke="#555" stroke-width="1"/>
+  <line x1="610" y1="142" x2="670" y2="142" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="610" y1="208" x2="670" y2="208" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="610" y1="306" x2="670" y2="272" stroke="#888" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Bottom labels -->
+  <text x="480" y="520" text-anchor="middle" font-size="12" fill="#555" font-family="SimHei">YOLO11 采用 Backbone-Neck-Head 三段式架构，支持检测与实例分割双任务</text>
+  <text x="480" y="542" text-anchor="middle" font-size="11" fill="#888">C3k2 模块增强多尺度特征提取 | SPPF 扩大感受野 | 解耦头分离分类与回归</text>
+</svg>
+</body>
+</html>

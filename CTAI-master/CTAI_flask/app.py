@@ -4,13 +4,12 @@ import os
 import shutil
 from datetime import timedelta
 
-import torch
 from flask import *
+from ultralytics import YOLO
 
 import core.main
 import database
 import llm_service
-import core.net.unet as net
 import core.time_series_predict as ts_predict
 
 UPLOAD_FOLDER = r'./uploads'
@@ -695,20 +694,29 @@ def api_update_llm_config():
         return jsonify({'status': 0, 'msg': msg}), 400
 
 def init_model():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = net.Unet(1, 1).to(device)
+    """加载 YOLO11-seg 模型"""
+    model_path = "./core/net/best.pt"  # YOLO11训练产出的最佳权重
+
+    if not os.path.isfile(model_path):
+        print(f"[WARNING] 模型文件不存在: {model_path}")
+        print("[WARNING] /upload 推理功能不可用，但其他接口正常")
+        return None
+
     try:
-        if torch.cuda.is_available():
-            model.load_state_dict(torch.load("./core/net/model.pth", weights_only=False))
+        model = YOLO(model_path)
+        print(f"[INFO] YOLO11-seg 模型加载成功: {model_path}")
+
+        # 验证模型类型
+        if hasattr(model, 'task') and model.task == 'segment':
+            print("[INFO] 模型任务类型: 实例分割")
         else:
-            model.load_state_dict(torch.load("./core/net/model.pth", map_location='cpu', weights_only=False))
-        model.eval()
-        print("[INFO] 模型加载成功")
+            print("[WARNING] 模型可能不是分割模型，请检查")
+
+        return model
     except Exception as e:
         print(f"[WARNING] 模型加载失败: {e}")
         print("[WARNING] /upload 推理功能不可用，但其他接口正常")
-        model = None
-    return model
+        return None
 
 
 if __name__ == '__main__':

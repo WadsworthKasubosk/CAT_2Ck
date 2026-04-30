@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>图3-3 数据库ER图</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; font-family: "SimSun", "SimHei", serif; }
+</style>
+</head>
+<body>
+<svg width="880" height="480" viewBox="0 0 880 480" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#555"/></marker>
+  </defs>
+
+  <text x="440" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" font-family="SimSun, SimHei">图3-3 数据库ER图</text>
+
+  <!-- ===== patients table ===== -->
+  <rect x="40" y="80" width="220" height="310" rx="6" fill="#fff" stroke="#4A90D9" stroke-width="2"/>
+  <!-- Header -->
+  <rect x="40" y="80" width="220" height="40" rx="6" fill="#4A90D9"/>
+  <rect x="40" y="100" width="220" height="20" fill="#4A90D9"/>
+  <text x="150" y="105" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold" font-family="SimHei">patients</text>
+  <text x="150" y="118" text-anchor="middle" font-size="9" fill="#ddd">患者信息表</text>
+
+  <!-- Fields -->
+  <text x="55" y="145" font-size="11" fill="#E74C3C" font-weight="bold">PK</text>
+  <text x="85" y="145" font-size="11" fill="#333" font-weight="bold">id</text>
+  <text x="195" y="145" font-size="10" fill="#888" text-anchor="end">INTEGER</text>
+  <line x1="50" y1="152" x2="250" y2="152" stroke="#eee" stroke-width="1"/>
+
+  <text x="85" y="170" font-size="11" fill="#333">name</text>
+  <text x="195" y="170" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <text x="220" y="170" font-size="9" fill="#aaa">姓名</text>
+  <line x1="50" y1="177" x2="250" y2="177" stroke="#eee" stroke-width="1"/>
+
+  <text x="85" y="195" font-size="11" fill="#333">gender</text>
+  <text x="195" y="195" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <text x="220" y="195" font-size="9" fill="#aaa">性别</text>
+  <line x1="50" y1="202" x2="250" y2="202" stroke="#eee" stroke-width="1"/>
+
+  <text x="85" y="220" font-size="11" fill="#333">age</text>
+  <text x="195" y="220" font-size="10" fill="#888" text-anchor="end">INTEGER</text>
+  <text x="220" y="220" font-size="9" fill="#aaa">年龄</text>
+  <line x1="50" y1="227" x2="250" y2="227" stroke="#eee" stroke-width="1"/>
+
+  <text x="85" y="245" font-size="11" fill="#333">phone</text>
+  <text x="195" y="245" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <text x="220" y="245" font-size="9" fill="#aaa">电话</text>
+  <line x1="50" y1="252" x2="250" y2="252" stroke="#eee" stroke-width="1"/>
+
+  <text x="85" y="270" font-size="11" fill="#333">body_part</text>
+  <text x="195" y="270" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <text x="220" y="270" font-size="9" fill="#aaa">部位</text>
+  <line x1="50" y1="277" x2="250" y2="277" stroke="#eee" stroke-width="1"/>
+
+  <text x="85" y="295" font-size="11" fill="#333">created_at</text>
+  <text x="195" y="295" font-size="10" fill="#888" text-anchor="end">DATETIME</text>
+
+  <!-- ===== diagnosis_records table ===== -->
+  <rect x="330" y="55" width="230" height="385" rx="6" fill="#fff" stroke="#E67E22" stroke-width="2"/>
+  <!-- Header -->
+  <rect x="330" y="55" width="230" height="40" rx="6" fill="#E67E22"/>
+  <rect x="330" y="75" width="230" height="20" fill="#E67E22"/>
+  <text x="445" y="80" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold" font-family="SimHei">diagnosis_records</text>
+  <text x="445" y="93" text-anchor="middle" font-size="9" fill="#fdd">诊断记录表</text>
+
+  <text x="345" y="120" font-size="11" fill="#E74C3C" font-weight="bold">PK</text>
+  <text x="375" y="120" font-size="11" fill="#333" font-weight="bold">id</text>
+  <text x="505" y="120" font-size="10" fill="#888" text-anchor="end">INTEGER</text>
+  <line x1="340" y1="127" x2="550" y2="127" stroke="#eee" stroke-width="1"/>
+
+  <text x="345" y="145" font-size="11" fill="#2471A3" font-weight="bold">FK</text>
+  <text x="375" y="145" font-size="11" fill="#333" font-weight="bold">patient_id</text>
+  <text x="505" y="145" font-size="10" fill="#888" text-anchor="end">INTEGER</text>
+  <line x1="340" y1="152" x2="550" y2="152" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="170" font-size="11" fill="#333">dcm_filename</text>
+  <text x="505" y="170" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="340" y1="177" x2="550" y2="177" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="195" font-size="11" fill="#333">image_url</text>
+  <text x="505" y="195" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="340" y1="202" x2="550" y2="202" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="220" font-size="11" fill="#333">draw_url</text>
+  <text x="505" y="220" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="340" y1="227" x2="550" y2="227" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="245" font-size="11" fill="#333">mask_url</text>
+  <text x="505" y="245" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="340" y1="252" x2="550" y2="252" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="270" font-size="11" fill="#333">area</text>
+  <text x="505" y="270" font-size="10" fill="#888" text-anchor="end">REAL</text>
+  <text x="530" y="270" font-size="9" fill="#aaa">面积</text>
+  <line x1="340" y1="277" x2="550" y2="277" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="295" font-size="11" fill="#333">perimeter</text>
+  <text x="505" y="295" font-size="10" fill="#888" text-anchor="end">REAL</text>
+  <text x="530" y="295" font-size="9" fill="#aaa">周长</text>
+  <line x1="340" y1="302" x2="550" y2="302" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="320" font-size="11" fill="#333">image_info</text>
+  <text x="505" y="320" font-size="10" fill="#888" text-anchor="end">TEXT(JSON)</text>
+  <text x="540" y="320" font-size="9" fill="#aaa">24项特征</text>
+  <line x1="340" y1="327" x2="550" y2="327" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="345" font-size="11" fill="#333">status</text>
+  <text x="505" y="345" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="340" y1="352" x2="550" y2="352" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="370" font-size="11" fill="#333">doctor_note</text>
+  <text x="505" y="370" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="340" y1="377" x2="550" y2="377" stroke="#eee" stroke-width="1"/>
+
+  <text x="375" y="395" font-size="11" fill="#333">created_at</text>
+  <text x="505" y="395" font-size="10" fill="#888" text-anchor="end">DATETIME</text>
+
+  <!-- ===== llm_reports table ===== -->
+  <rect x="630" y="100" width="220" height="260" rx="6" fill="#fff" stroke="#8E44AD" stroke-width="2"/>
+  <!-- Header -->
+  <rect x="630" y="100" width="220" height="40" rx="6" fill="#8E44AD"/>
+  <rect x="630" y="120" width="220" height="20" fill="#8E44AD"/>
+  <text x="740" y="125" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold" font-family="SimHei">llm_reports</text>
+  <text x="740" y="138" text-anchor="middle" font-size="9" fill="#e8d5f5">LLM报告表</text>
+
+  <text x="645" y="165" font-size="11" fill="#E74C3C" font-weight="bold">PK</text>
+  <text x="675" y="165" font-size="11" fill="#333" font-weight="bold">id</text>
+  <text x="800" y="165" font-size="10" fill="#888" text-anchor="end">INTEGER</text>
+  <line x1="640" y1="172" x2="840" y2="172" stroke="#eee" stroke-width="1"/>
+
+  <text x="645" y="190" font-size="11" fill="#2471A3" font-weight="bold">FK</text>
+  <text x="675" y="190" font-size="11" fill="#333" font-weight="bold">diagnosis_id</text>
+  <text x="800" y="190" font-size="10" fill="#888" text-anchor="end">INTEGER</text>
+  <line x1="640" y1="197" x2="840" y2="197" stroke="#eee" stroke-width="1"/>
+
+  <text x="675" y="215" font-size="11" fill="#333">prompt</text>
+  <text x="800" y="215" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <text x="820" y="215" font-size="9" fill="#aaa">提示词</text>
+  <line x1="640" y1="222" x2="840" y2="222" stroke="#eee" stroke-width="1"/>
+
+  <text x="675" y="240" font-size="11" fill="#333">advice</text>
+  <text x="800" y="240" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <text x="820" y="240" font-size="9" fill="#aaa">建议</text>
+  <line x1="640" y1="247" x2="840" y2="247" stroke="#eee" stroke-width="1"/>
+
+  <text x="675" y="265" font-size="11" fill="#333">model_name</text>
+  <text x="800" y="265" font-size="10" fill="#888" text-anchor="end">TEXT</text>
+  <line x1="640" y1="272" x2="840" y2="272" stroke="#eee" stroke-width="1"/>
+
+  <text x="675" y="290" font-size="11" fill="#333">created_at</text>
+  <text x="800" y="290" font-size="10" fill="#888" text-anchor="end">DATETIME</text>
+
+  <!-- ===== Relationships ===== -->
+  <!-- patients 1:N diagnosis_records -->
+  <line x1="260" y1="145" x2="330" y2="145" stroke="#2471A3" stroke-width="2.5"/>
+  <text x="278" y="138" font-size="12" fill="#2471A3" font-weight="bold">1</text>
+  <text x="315" y="138" font-size="12" fill="#2471A3" font-weight="bold">N</text>
+  <!-- Relationship diamond -->
+  <polygon points="295,145 285,155 295,165 305,155" fill="#2471A3" opacity="0.3" stroke="#2471A3" stroke-width="1"/>
+
+  <!-- diagnosis_records 1:N llm_reports -->
+  <line x1="560" y1="190" x2="630" y2="190" stroke="#8E44AD" stroke-width="2.5"/>
+  <text x="578" y="183" font-size="12" fill="#8E44AD" font-weight="bold">1</text>
+  <text x="618" y="183" font-size="12" fill="#8E44AD" font-weight="bold">N</text>
+  <!-- Relationship diamond -->
+  <polygon points="595,190 585,200 595,210 605,200" fill="#8E44AD" opacity="0.3" stroke="#8E44AD" stroke-width="1"/>
+
+  <!-- Bottom annotation -->
+  <text x="440" y="462" text-anchor="middle" font-size="11" fill="#555" font-family="SimHei">一个患者拥有多条诊断记录 (1:N)，一条诊断记录关联多份LLM报告 (1:N)</text>
+</svg>
+</body>
+</html>

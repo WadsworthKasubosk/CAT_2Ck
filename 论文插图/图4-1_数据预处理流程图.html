@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>图4-1 DICOM数据预处理流程图</title>
+<style>
+  body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; font-family: "SimSun", "SimHei", serif; }
+</style>
+</head>
+<body>
+<svg width="900" height="320" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#555"/></marker>
+  </defs>
+
+  <text x="450" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#333" font-family="SimSun, SimHei">图4-1 DICOM数据预处理流程图</text>
+
+  <!-- ===== Step 1: DCM Input ===== -->
+  <rect x="20" y="70" width="110" height="70" rx="6" fill="#34495E"/>
+  <text x="75" y="96" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold" font-family="SimHei">DICOM文件</text>
+  <text x="75" y="115" text-anchor="middle" font-size="9" fill="#ccc">*.dcm</text>
+  <text x="75" y="130" text-anchor="middle" font-size="9" fill="#ccc">含CT值(HU)</text>
+
+  <line x1="130" y1="105" x2="155" y2="105" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 2: SimpleITK Read ===== -->
+  <rect x="160" y="70" width="120" height="70" rx="6" fill="#4A90D9"/>
+  <text x="220" y="93" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">SimpleITK</text>
+  <text x="220" y="110" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">读取</text>
+  <text x="220" y="130" text-anchor="middle" font-size="9" fill="#ddd">GetArrayFromImage</text>
+
+  <text x="220" y="155" text-anchor="middle" font-size="9" fill="#888">输出: float32 矩阵</text>
+  <text x="220" y="167" text-anchor="middle" font-size="9" fill="#888">[1, H, W] or [H, W]</text>
+
+  <line x1="280" y1="105" x2="305" y2="105" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 3: Normalize ===== -->
+  <rect x="310" y="70" width="120" height="70" rx="6" fill="#27AE60"/>
+  <text x="370" y="93" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">归一化</text>
+  <text x="370" y="110" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">min-max</text>
+  <text x="370" y="130" text-anchor="middle" font-size="9" fill="#ddd">-> [0, 255] uint8</text>
+
+  <text x="370" y="155" text-anchor="middle" font-size="9" fill="#888">(val - min) / (max - min)</text>
+  <text x="370" y="167" text-anchor="middle" font-size="9" fill="#888">x 255 -> uint8</text>
+
+  <line x1="430" y1="105" x2="455" y2="105" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 4: Branch ===== -->
+  <!-- Diamond shape for branch -->
+  <polygon points="505,105 475,80 505,55 535,80" fill="#F39C12" stroke="#E67E22" stroke-width="1.5"/>
+  <text x="505" y="83" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">分支</text>
+
+  <!-- Branch 1: Save grayscale PNG (for display) -->
+  <line x1="505" y1="105" x2="505" y2="195" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="440" y="200" width="130" height="65" rx="6" fill="#8E44AD"/>
+  <text x="505" y="222" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">保存灰度 PNG</text>
+  <text x="505" y="240" text-anchor="middle" font-size="9" fill="#ddd">tmp/image/{name}.png</text>
+  <text x="505" y="255" text-anchor="middle" font-size="9" fill="#ddd">供前端显示 + 特征提取</text>
+
+  <!-- Branch 2: Convert to 3ch for YOLO -->
+  <line x1="535" y1="80" x2="600" y2="80" stroke="#555" stroke-width="1.5"/>
+  <line x1="600" y1="80" x2="600" y2="95" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <rect x="580" y="70" width="10" height="1" fill="transparent"/>
+
+  <rect x="560" y="100" width="140" height="70" rx="6" fill="#E74C3C"/>
+  <text x="630" y="120" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">灰度转3通道</text>
+  <text x="630" y="138" text-anchor="middle" font-size="9" fill="#fdd">cvtColor(GRAY2BGR)</text>
+  <text x="630" y="155" text-anchor="middle" font-size="9" fill="#fdd">H x W -> H x W x 3</text>
+
+  <line x1="700" y1="135" x2="725" y2="135" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ===== Step 5: Save 3ch PNG ===== -->
+  <rect x="730" y="100" width="140" height="70" rx="6" fill="#2C3E50"/>
+  <text x="800" y="120" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold" font-family="SimHei">保存3通道 PNG</text>
+  <text x="800" y="140" text-anchor="middle" font-size="9" fill="#ccc">tmp/image/{name}_3ch.png</text>
+  <text x="800" y="158" text-anchor="middle" font-size="10" fill="#F39C12" font-weight="bold">-> YOLO11-seg 输入</text>
+
+  <!-- ===== Bottom summary ===== -->
+  <rect x="100" y="280" width="700" height="30" rx="4" fill="#F8F9FA" stroke="#DEE2E6" stroke-width="1"/>
+  <text x="450" y="300" text-anchor="middle" font-size="11" fill="#555" font-family="SimHei">预处理输出: 灰度PNG (前端显示 + 特征提取) + 3通道PNG (YOLO模型推理输入)</text>
+</svg>
+</body>
+</html>

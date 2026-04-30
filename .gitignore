@@ -1,7 +1,15 @@
 # 大数据目录
 直肠癌数据/
 直肠癌数据_small/
+直肠癌数据_tiny/
 实验成果/
+
+# 大文件
+直肠癌数据.zip
+CTAI-master/CTAI_model/rectal_tumor_seg_dataset.zip
+
+# 数据集图片（太大，不推送）
+CTAI-master/CTAI_model/datasets/rectal_tumor_seg/images/
 
 # 模型权重文件
 *.pth

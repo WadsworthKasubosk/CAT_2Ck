@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import flask, ultralytics, torch; print\\('flask:', flask.__version__\\); print\\('ultralytics:', ultralytics.__version__\\); print\\('torch:', torch.__version__\\)\")"
+    ]
+  }
+}
