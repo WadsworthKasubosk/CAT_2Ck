@@ -1,22 +1,34 @@
-# 大数据目录
+# ==== 大数据目录 ====
 直肠癌数据/
 直肠癌数据_small/
 直肠癌数据_tiny/
 实验成果/
 
-# 大文件
+# ==== 大文件 / 打包产物 ====
 直肠癌数据.zip
+ctai-code-and-splits.zip
+ctai-yolo-dataset.zip
 CTAI-master/CTAI_model/rectal_tumor_seg_dataset.zip
 
-# 数据集图片（太大，不推送）
+# ==== 旧 YOLO-seg 数据集（已废弃） ====
 CTAI-master/CTAI_model/datasets/rectal_tumor_seg/images/
 
-# 模型权重文件
+# ==== 模型权重 ====
 *.pth
+*.pt
 
-# node_modules
+# ==== 新 cascade 流程的产物（重构任务） ====
+ctai_model_code/yolo_dataset/
+ctai_model_code/runs/
+ctai_model_code/CTAI_model/runs/
+ctai_model_code/CTAI_model/checkpoints/*.pt
+ctai_model_code/CTAI_model/checkpoints/*.pth
+ctai_model_code/results/
+results/
+runs/
+
+# ==== node / Python 工件 ====
 node_modules/
-
-# Python
 __pycache__/
 *.pyc
+.ipynb_checkpoints/

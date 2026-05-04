@@ -253,9 +253,12 @@ def train(config: TrainConfig):
     seed_everything(config.seed)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[设备] {device}")
+    n_gpus = torch.cuda.device_count() if device.type == 'cuda' else 0
+    use_multi_gpu = n_gpus >= 2
+    print(f"[设备] {device}  |  GPU 数量: {n_gpus}")
     if device.type == 'cuda':
-        print(f"[GPU] {torch.cuda.get_device_name(0)}")
+        for i in range(n_gpus):
+            print(f"[GPU {i}] {torch.cuda.get_device_name(i)}")
         torch.cuda.empty_cache()
 
     # ==================== 数据（患者级 train/val 划分）====================
@@ -283,8 +286,22 @@ def train(config: TrainConfig):
     eval_dataset = CTFullImageDataset(config.data_dir, config, samples=val_samples)
     print(f"评估数据: {len(eval_dataset)} 张全尺寸切片 (来自独立验证患者)")
 
+    # helper: 去掉 DataParallel 的 "module." 前缀
+    def _strip_dp(state_dict):
+        if not isinstance(state_dict, dict):
+            return state_dict
+        return {(k[7:] if k.startswith('module.') else k): v
+                for k, v in state_dict.items()}
+
+    def _strip_dp_k(key):
+        return key[7:] if key.startswith('module.') else key
+
     # ==================== 模型 ====================
-    model = build_model(config).to(device)
+    model = build_model(config)
+    if use_multi_gpu:
+        model = nn.DataParallel(model)
+        print(f"[模型] DataParallel 已启用，{n_gpus} 块 GPU 并行")
+    model = model.to(device)
     model.apply(weights_init)
 
     # 统计参数量
@@ -329,13 +346,15 @@ def train(config: TrainConfig):
     if config.resume and os.path.isfile(config.resume):
         print(f"\n正在从 checkpoint 恢复: {config.resume}")
         ckpt = torch.load(config.resume, map_location=device)
-        model.load_state_dict(ckpt['model_state_dict'])
+        model_sd = _strip_dp(ckpt['model_state_dict'])
+        _raw = model.module if use_multi_gpu else model
+        _raw.load_state_dict(model_sd)
         if 'optimizer_state_dict' in ckpt:
             optimizer.load_state_dict(ckpt['optimizer_state_dict'])
         if 'scheduler_state_dict' in ckpt and scheduler is not None:
             scheduler.load_state_dict(ckpt['scheduler_state_dict'])
         if 'ema_state_dict' in ckpt and ema is not None:
-            ema.shadow = {k: v.to(device) for k, v in ckpt['ema_state_dict'].items()}
+            ema.shadow = _strip_dp({k: v.to(device) for k, v in ckpt['ema_state_dict'].items()})
         if 'epoch' in ckpt:
             start_epoch = ckpt['epoch']  # checkpoint 保存的是已完成的 epoch 数
         if 'best_dice' in ckpt:
@@ -469,10 +488,11 @@ def train(config: TrainConfig):
                 no_improve_count = 0
                 # 轻量版: 只保存推理所需
                 best_path = os.path.join(config.save_dir, 'best_model.pth')
+                raw_model = model.module if use_multi_gpu else model
                 torch.save({
                     'epoch': epoch + 1,
-                    'model_state_dict': model.state_dict(),
-                    'ema_state_dict': {k: v.cpu() for k, v in ema.shadow.items()} if ema else None,
+                    'model_state_dict': raw_model.state_dict(),
+                    'ema_state_dict': {_strip_dp_k(k): v.cpu() for k, v in ema.shadow.items()} if ema else None,
                     'best_dice': best_dice,
                     'config': config.__dict__,
                 }, best_path)
@@ -486,12 +506,13 @@ def train(config: TrainConfig):
         # ==================== 定期保存 checkpoint（防断网）====================
         if (epoch + 1) % config.save_interval == 0:
             ckpt_path = os.path.join(config.save_dir, 'latest_checkpoint.pth')
+            raw_model = model.module if use_multi_gpu else model
             torch.save({
                 'epoch': epoch + 1,
-                'model_state_dict': model.state_dict(),
+                'model_state_dict': raw_model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
-                'ema_state_dict': {k: v.cpu() for k, v in ema.shadow.items()} if ema else None,
+                'ema_state_dict': {_strip_dp_k(k): v.cpu() for k, v in ema.shadow.items()} if ema else None,
                 'best_dice': best_dice,
                 'no_improve_count': no_improve_count,
                 'history': history,
@@ -508,9 +529,10 @@ def train(config: TrainConfig):
     # ==================== 训练结束 ====================
     # 保存最后模型
     last_path = os.path.join(config.save_dir, 'last_model.pth')
+    _raw = model.module if use_multi_gpu else model
     torch.save({
         'epoch': epoch + 1,
-        'model_state_dict': model.state_dict(),
+        'model_state_dict': _raw.state_dict(),
         'best_dice': best_dice,
         'config': config.__dict__,
     }, last_path)
